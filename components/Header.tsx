@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect } from "react";
-import BSLLogo from "./BSLLogo";
+import Image from "next/image";
 
 interface NavItem {
   label: string;
@@ -90,19 +90,25 @@ const Header: React.FC = () => {
 
           {/* ── Logo ── */}
           <a href="#" className="flex items-center gap-3 group flex-shrink-0">
-            <div className="transition-transform duration-300 group-hover:scale-105">
-              <BSLLogo size={48} variant="color" />
+            <div className="relative w-36 h-36 flex-shrink-0 transition-transform duration-300 group-hover:scale-105">
+              <Image
+                src="/BSLB.png"
+                alt="Brighton School of Lahore Logo"
+                fill
+                className="object-contain"
+                priority
+              />
             </div>
             <div className="flex flex-col leading-tight">
-              <span
+              {/* <span
                 className="text-[22px] font-black text-[#1E3A6E] tracking-wide"
                 style={{ fontFamily: "'Nunito', sans-serif" }}
               >
                 BSL
-              </span>
-              <span className="text-[10px] font-semibold text-[#F5A623] tracking-wider uppercase">
+              </span> */}
+              {/* <span className="text-[10px] font-semibold text-[#F5A623] tracking-wider uppercase">
                 Brighton School of Lahore
-              </span>
+              </span> */}
             </div>
           </a>
 

@@ -1,6 +1,5 @@
-'use client'
 import React from "react";
-import BSLLogo from "./BSLLogo";
+import Image from "next/image";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface FooterLink {
@@ -157,8 +156,13 @@ const Footer: React.FC = () => {
           <div>
             {/* Logo */}
             <a href="#" className="flex items-center gap-3 mb-4 group w-fit">
-              <div className="transition-transform duration-300 group-hover:scale-105">
-                <BSLLogo size={44} variant="white" />
+              <div className="relative w-11 h-11 flex-shrink-0 transition-transform duration-300 group-hover:scale-105">
+                <Image
+                  src="/BSL.png"
+                  alt="Brighton School of Lahore Logo"
+                  fill
+                  className="object-contain"
+                />
               </div>
               <div className="flex flex-col leading-tight">
                 <span
@@ -204,8 +208,8 @@ const Footer: React.FC = () => {
                     <a
                       href={link.href}
                       className="text-[13.5px] font-medium text-[#8FA3C0]
-                                 hover:text-white transition-colors duration-200
-                                 hover:pl-1 inline-block transition-all"
+                                 hover:text-white hover:pl-1
+                                 transition-all duration-200 inline-block"
                     >
                       {link.label}
                     </a>
