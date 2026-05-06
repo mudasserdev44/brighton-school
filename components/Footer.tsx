@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface FooterLink {
@@ -39,11 +40,11 @@ const FOOTER_COLUMNS: FooterColumn[] = [
   {
     title: "Support",
     links: [
-      { label: "Help Center", href: "#" },
+      { label: "Help Center", href: "help-center" },
       { label: "Fee Structure", href: "#" },
       { label: "Parent Portal", href: "#" },
-      { label: "Privacy Policy", href: "#" },
-      { label: "Terms of Use", href: "#" },
+      { label: "Privacy Policy", href: "privacy-policy" },
+      { label: "Terms of Use", href: "terms" },
       { label: "Accessibility", href: "#" },
     ],
   },
@@ -205,14 +206,14 @@ const Footer: React.FC = () => {
               <ul className="flex flex-col gap-[10px]">
                 {col.links.map((link) => (
                   <li key={link.label}>
-                    <a
+                    <Link
                       href={link.href}
                       className="text-[13.5px] font-medium text-[#8FA3C0]
                                  hover:text-white hover:pl-1
                                  transition-all duration-200 inline-block"
                     >
                       {link.label}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface NavItem {
   label: string;
@@ -8,12 +9,12 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "Home", href: "#" },
+  { label: "Home", href: "/" },
   { label: "Courses", href: "#" },
   { label: "Admissions", href: "#" },
   { label: "Faculty", href: "#" },
-  { label: "About", href: "#" },
-  { label: "Contact", href: "#" },
+  { label: "About", href: "about-us" },
+  { label: "Contact", href: "contact-us" },
 ];
 
 const SearchIcon: React.FC = () => (
@@ -89,7 +90,7 @@ const Header: React.FC = () => {
         <div className="flex items-center justify-between h-[70px]">
 
           {/* ── Logo ── */}
-          <a href="#" className="flex items-center gap-3 group flex-shrink-0">
+          <Link href="/" className="flex items-center gap-3 group flex-shrink-0">
             <div className="relative w-36 h-36 flex-shrink-0 transition-transform duration-300 group-hover:scale-105">
               <Image
                 src="/BSLB.png"
@@ -110,12 +111,12 @@ const Header: React.FC = () => {
                 Brighton School of Lahore
               </span> */}
             </div>
-          </a>
+          </Link>
 
           {/* ── Desktop Nav ── */}
           <nav className="hidden lg:flex items-center gap-1" aria-label="Main navigation">
             {NAV_ITEMS.map((item) => (
-              <a
+              <Link
                 key={item.label}
                 href={item.href}
                 onClick={() => setActiveNav(item.label)}
@@ -130,7 +131,7 @@ const Header: React.FC = () => {
                 `}
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
           </nav>
 
@@ -194,7 +195,7 @@ const Header: React.FC = () => {
           aria-label="Mobile navigation"
         >
           {NAV_ITEMS.map((item) => (
-            <a
+            <Link
               key={item.label}
               href={item.href}
               onClick={() => {
@@ -212,7 +213,7 @@ const Header: React.FC = () => {
               `}
             >
               {item.label}
-            </a>
+            </Link >
           ))}
 
           <div className="flex gap-3 mt-3 pt-3 border-t border-[#EEF3FB]">
