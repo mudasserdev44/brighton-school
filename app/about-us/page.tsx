@@ -17,11 +17,10 @@ function useInView(threshold = 0.15) {
 }
 
 const MILESTONES = [
-  { year: '1995', title: 'School Founded', desc: 'Brighton School of Lahore opened its doors with just 3 classrooms and a vision.' },
-  { year: '2003', title: 'O-Level Wing', desc: 'Cambridge O-Level programme launched, bringing international curriculum to Lahore.' },
-  { year: '2010', title: 'New Campus', desc: 'Expanded to a purpose-built campus with modern labs, library and sports complex.' },
-  { year: '2018', title: 'A-Level & FSc', desc: 'Senior section introduced — offering both Cambridge A-Levels and HSSC FSc streams.' },
-  { year: '2024', title: '5000+ Students', desc: 'Crossed the milestone of 5,000 enrolled students across all classes.' },
+  { year: '2026', title: 'School Founded', desc: 'Brighton School of Lahore opened its doors with a bold vision for modern, quality education in Lahore.' },
+  { year: '2026', title: 'State-of-the-Art Campus', desc: 'Purpose-built campus with smart classrooms, science labs, library and sports facilities from day one.' },
+  { year: '2026', title: 'Cambridge Affiliation', desc: 'O-Level programme launched with Cambridge affiliation, bringing internationally recognised qualifications.' },
+  { year: '2026', title: 'Growing Community', desc: 'A thriving community of students, parents and faculty united by a shared commitment to excellence.' },
 ];
 
 const VALUES = [
@@ -61,11 +60,131 @@ const VALUES = [
   },
 ];
 
+// ── Reusable Leader Card ───────────────────────────────────────────────────
+interface LeaderCardProps {
+  imageSrc: string;
+  imageAlt: string;
+  badge: string;
+  name: string;
+  subtitle: string;
+  quote: string;
+  quoteLabel: string;
+  accentColor: string;
+  delay?: string;
+  translateFrom?: string;
+  inView: boolean;
+}
+
+const LeaderCard: React.FC<LeaderCardProps> = ({
+  imageSrc, imageAlt, badge, name, subtitle,
+  quote, quoteLabel, accentColor, delay = '0s', translateFrom = 'translateX(-36px)', inView,
+}) => (
+  <div
+    className="flex flex-col gap-5"
+    style={{
+      opacity: inView ? 1 : 0,
+      transform: inView ? 'translateX(0)' : translateFrom,
+      transition: `all 0.7s ease ${delay}`,
+    }}
+  >
+    {/* Image frame with gradient border */}
+    <div
+      className="relative p-[2px] rounded-3xl"
+      style={{
+        background: `linear-gradient(135deg, ${accentColor} 0%, #1E3A6E 50%, ${accentColor} 100%)`,
+        boxShadow: `0 0 60px ${accentColor}30, 0 0 100px rgba(30,58,110,0.25)`,
+      }}
+    >
+      <div className="relative rounded-[22px] overflow-hidden bg-[#0F2347]">
+        <div className="relative w-full h-[360px] md:h-[420px]">
+          <Image
+            src={imageSrc}
+            alt={imageAlt}
+            fill
+            className="object-cover object-top"
+            priority
+          />
+          {/* Bottom gradient overlay */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: 'linear-gradient(to bottom, transparent 40%, rgba(7,16,32,0.93) 100%)',
+            }}
+          />
+          {/* Name plate */}
+          <div className="absolute bottom-4 left-4 right-4">
+            <div
+              className="px-4 py-3 rounded-xl backdrop-blur-md"
+              style={{
+                background: 'rgba(10,22,40,0.75)',
+                border: `1px solid ${accentColor}33`,
+              }}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <div
+                  className="w-1.5 h-1.5 rounded-full animate-pulse"
+                  style={{ background: accentColor }}
+                />
+                <span
+                  className="text-[10px] font-bold uppercase tracking-widest"
+                  style={{ color: accentColor }}
+                >
+                  {badge}
+                </span>
+              </div>
+              <p
+                className="text-white font-black text-base leading-tight"
+                style={{ fontFamily: "'Nunito', sans-serif" }}
+              >
+                {name}
+              </p>
+              <p className="text-white/50 text-xs mt-0.5">{subtitle}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Quote card */}
+    <div
+      className="relative p-5 rounded-2xl"
+      style={{
+        background: `${accentColor}09`,
+        border: `1px solid ${accentColor}28`,
+      }}
+    >
+      <span
+        className="absolute -top-4 left-4 text-5xl leading-none opacity-25 select-none"
+        style={{ color: accentColor, fontFamily: "'Nunito', sans-serif" }}
+      >
+        "
+      </span>
+      <p className="text-white/65 text-sm leading-relaxed italic mt-1">
+        {quote}
+      </p>
+      <div className="mt-3 flex items-center gap-2">
+        <div
+          className="h-px flex-1"
+          style={{ background: `linear-gradient(90deg, ${accentColor}50, transparent)` }}
+        />
+        <span
+          className="text-[10px] font-bold uppercase tracking-widest"
+          style={{ color: accentColor }}
+        >
+          {quoteLabel}
+        </span>
+      </div>
+    </div>
+  </div>
+);
+
+// ── Main Component ─────────────────────────────────────────────────────────
 export default function AboutSection() {
-  const headingView = useInView();
-  const founderView = useInView();
+  const headingView  = useInView();
+  const missionView  = useInView();
+  const leaderView   = useInView();
   const timelineView = useInView();
-  const valuesView = useInView();
+  const valuesView   = useInView();
 
   return (
     <section
@@ -82,15 +201,14 @@ export default function AboutSection() {
       <div className="absolute inset-0 pointer-events-none"
         style={{ background: 'radial-gradient(ellipse 50% 40% at 20% 80%, rgba(245,166,35,0.06) 0%, transparent 60%)' }} />
 
-      {/* ════════════════════════════
-          PART 1 — Intro + Founder
-      ════════════════════════════ */}
-      <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-12 pt-24 pb-20">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-12">
 
-        {/* Heading */}
+        {/* ════════════════════
+            PART 1 — Heading
+        ════════════════════ */}
         <div
           ref={headingView.ref}
-          className="text-center mb-16"
+          className="text-center pt-24 mb-16"
           style={{
             opacity: headingView.inView ? 1 : 0,
             transform: headingView.inView ? 'translateY(0)' : 'translateY(24px)',
@@ -120,182 +238,77 @@ export default function AboutSection() {
             </span>
           </h2>
           <p className="text-white/45 max-w-xl mx-auto text-sm leading-relaxed">
-            For over 30 years, BSL has been Lahore's trusted name in quality education —
-            shaping confident, capable, and compassionate young people.
+            Established in 2026, BSL was born from a passion to bring world-class,
+            values-driven education to the heart of Lahore.
           </p>
         </div>
 
-        {/* Founder + Mission two-column */}
+        {/* ════════════════════
+            PART 2 — Mission / Vision / Stats
+        ════════════════════ */}
         <div
-          ref={founderView.ref}
-          className="grid lg:grid-cols-2 gap-12 items-center"
+          ref={missionView.ref}
+          className="grid md:grid-cols-3 gap-5 pb-20"
+          style={{
+            opacity: missionView.inView ? 1 : 0,
+            transform: missionView.inView ? 'translateY(0)' : 'translateY(24px)',
+            transition: 'all 0.6s ease',
+          }}
         >
-          {/* LEFT — Founder Image */}
+          {/* Mission */}
           <div
-            style={{
-              opacity: founderView.inView ? 1 : 0,
-              transform: founderView.inView ? 'translateX(0)' : 'translateX(-40px)',
-              transition: 'all 0.7s ease',
-            }}
+            className="p-5 rounded-2xl"
+            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}
           >
-            {/* Gold gradient border */}
-            <div
-              className="relative p-[2px] rounded-3xl"
-              style={{
-                background: 'linear-gradient(135deg, #F5A623 0%, #1E3A6E 50%, #F5A623 100%)',
-                boxShadow: '0 0 60px rgba(245,166,35,0.2), 0 0 120px rgba(30,58,110,0.3)',
-              }}
-            >
-              <div className="relative rounded-[22px] overflow-hidden bg-[#0F2347]">
-                {/* Image */}
-                <div className="relative w-full h-[420px] md:h-[480px]">
-                  <Image
-                    src="/founder.png"
-                    alt="Founder – Brighton School of Lahore"
-                    fill
-                    className="object-cover object-top"
-                    priority
-                  />
-                  {/* Bottom gradient */}
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background: 'linear-gradient(to bottom, transparent 45%, rgba(7,16,32,0.92) 100%)',
-                    }}
-                  />
-                  {/* Bottom name plate */}
-                  <div className="absolute bottom-5 left-5 right-5">
-                    <div
-                      className="px-4 py-3 rounded-xl backdrop-blur-md"
-                      style={{ background: 'rgba(10,22,40,0.7)', border: '1px solid rgba(245,166,35,0.25)' }}
-                    >
-                      <div className="flex items-center gap-2 mb-1">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#F5A623] animate-pulse" />
-                        <span className="text-[#F5A623] text-[10px] font-bold uppercase tracking-widest">
-                          Founder & Director
-                        </span>
-                      </div>
-                      <p
-                        className="text-white font-black text-lg leading-tight"
-                        style={{ fontFamily: "'Nunito', sans-serif" }}
-                      >
-                        Mr. / Mrs. Founder Name
-                      </p>
-                      <p className="text-white/50 text-xs mt-0.5">Brighton School of Lahore · Est. 1995</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-2 h-2 rounded-full bg-[#4A9EFF]" />
+              <span className="text-[#4A9EFF] text-xs font-bold uppercase tracking-widest">Our Mission</span>
             </div>
-
-            {/* Floating A+ badge */}
-            <div
-              className="absolute -translate-y-[300px] translate-x-4
-                         w-16 h-16 rounded-2xl hidden md:flex flex-col items-center justify-center
-                         rotate-[-8deg] hover:rotate-0 transition-transform duration-300"
-              style={{
-                background: '#F5A623',
-                color: '#0A1628',
-                boxShadow: '0 8px 24px rgba(245,166,35,0.45)',
-              }}
-            >
-              <span className="text-xl font-black leading-none" style={{ fontFamily: "'Nunito', sans-serif" }}>A+</span>
-              <span className="text-[8px] font-bold uppercase tracking-wider">Results</span>
-            </div>
+            <p className="text-white/60 text-sm leading-relaxed">
+              To provide affordable, high-quality education that develops intellectual curiosity,
+              ethical values, and the practical skills students need to thrive in a rapidly changing world.
+            </p>
           </div>
 
-          {/* RIGHT — Mission / Vision / Message */}
+          {/* Vision */}
           <div
-            className="flex flex-col gap-6"
-            style={{
-              opacity: founderView.inView ? 1 : 0,
-              transform: founderView.inView ? 'translateX(0)' : 'translateX(40px)',
-              transition: 'all 0.7s ease 0.15s',
-            }}
+            className="p-5 rounded-2xl"
+            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}
           >
-            {/* Founder quote */}
-            <div
-              className="relative p-6 rounded-2xl"
-              style={{
-                background: 'rgba(245,166,35,0.06)',
-                border: '1px solid rgba(245,166,35,0.2)',
-              }}
-            >
-              {/* Big quote mark */}
-              <span
-                className="absolute -top-4 left-5 text-6xl leading-none text-[#F5A623] opacity-40 select-none"
-                style={{ fontFamily: "'Nunito', sans-serif" }}
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-2 h-2 rounded-full bg-[#34D399]" />
+              <span className="text-[#34D399] text-xs font-bold uppercase tracking-widest">Our Vision</span>
+            </div>
+            <p className="text-white/60 text-sm leading-relaxed">
+              To be Lahore's most trusted school — where every student graduates not just
+              with top grades, but with the confidence, compassion, and character to lead.
+            </p>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { val: '2026', label: 'Est.' },
+              { val: 'New',  label: 'Campus' },
+              { val: 'O/A',  label: 'Levels' },
+              { val: '100%', label: 'Dedication' },
+            ].map((s) => (
+              <div
+                key={s.label}
+                className="flex flex-col items-center py-3 rounded-xl"
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
               >
-                "
-              </span>
-              <p className="text-white/70 text-base leading-relaxed italic mt-2">
-                Our mission since 1995 has been simple — give every child in Lahore access to
-                world-class education in a caring, values-driven environment. We don't just
-                build careers, we build character.
-              </p>
-              <div className="mt-4 flex items-center gap-3">
-                <div className="h-px flex-1 bg-gradient-to-r from-[#F5A623]/40 to-transparent" />
-                <span className="text-[#F5A623] text-xs font-bold uppercase tracking-widest">
-                  Founder's Message
+                <span
+                  className="text-xl font-black text-[#F5A623]"
+                  style={{ fontFamily: "'Nunito', sans-serif" }}
+                >
+                  {s.val}
+                </span>
+                <span className="text-white/40 text-[10px] font-semibold uppercase tracking-wider mt-0.5">
+                  {s.label}
                 </span>
               </div>
-            </div>
-
-            {/* Mission */}
-            <div
-              className="p-5 rounded-2xl"
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-2 h-2 rounded-full bg-[#4A9EFF]" />
-                <span className="text-[#4A9EFF] text-xs font-bold uppercase tracking-widest">Our Mission</span>
-              </div>
-              <p className="text-white/60 text-sm leading-relaxed">
-                To provide affordable, high-quality education that develops intellectual
-                curiosity, ethical values, and the practical skills students need to thrive
-                in a rapidly changing world.
-              </p>
-            </div>
-
-            {/* Vision */}
-            <div
-              className="p-5 rounded-2xl"
-              style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-2 h-2 rounded-full bg-[#34D399]" />
-                <span className="text-[#34D399] text-xs font-bold uppercase tracking-widest">Our Vision</span>
-              </div>
-              <p className="text-white/60 text-sm leading-relaxed">
-                To be Lahore's most trusted school — where every student graduates not just
-                with top grades, but with the confidence, compassion, and character to lead.
-              </p>
-            </div>
-
-            {/* Quick stats row */}
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { val: '1995', label: 'Est.' },
-                { val: '5000+', label: 'Students' },
-                { val: '30+', label: 'Years' },
-              ].map((s) => (
-                <div
-                  key={s.label}
-                  className="flex flex-col items-center py-4 rounded-xl"
-                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
-                >
-                  <span
-                    className="text-2xl font-black text-[#F5A623]"
-                    style={{ fontFamily: "'Nunito', sans-serif" }}
-                  >
-                    {s.val}
-                  </span>
-                  <span className="text-white/40 text-[10px] font-semibold uppercase tracking-wider mt-0.5">
-                    {s.label}
-                  </span>
-                </div>
-              ))}
-            </div>
+            ))}
           </div>
         </div>
       </div>
@@ -306,9 +319,84 @@ export default function AboutSection() {
         style={{ background: 'linear-gradient(90deg, transparent, rgba(245,166,35,0.25), transparent)' }}
       />
 
-      {/* ════════════════════════════
-          PART 2 — Timeline
-      ════════════════════════════ */}
+      {/* ════════════════════
+          PART 3 — Leadership (Founder + Co-Founder)
+      ════════════════════ */}
+      <div
+        ref={leaderView.ref}
+        className="relative z-10 max-w-6xl mx-auto px-6 lg:px-12 py-20"
+      >
+        {/* Sub-heading */}
+        <div
+          className="text-center mb-14"
+          style={{
+            opacity: leaderView.inView ? 1 : 0,
+            transform: leaderView.inView ? 'translateY(0)' : 'translateY(20px)',
+            transition: 'all 0.5s ease',
+          }}
+        >
+          <p className="text-[#F5A623] text-xs font-bold uppercase tracking-[0.3em] mb-2">
+            The People Behind BSL
+          </p>
+          <h3
+            className="text-3xl md:text-4xl font-black text-white"
+            style={{ fontFamily: "'Nunito', sans-serif" }}
+          >
+            Meet Our{' '}
+            <span
+              className="text-transparent bg-clip-text"
+              style={{ backgroundImage: 'linear-gradient(90deg, #F5A623, #FFD080)' }}
+            >
+              Leadership
+            </span>
+          </h3>
+        </div>
+
+        {/* Two cards side by side */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-14">
+
+          {/* Founder */}
+          <LeaderCard
+            imageSrc="/founder.png"
+            imageAlt="Founder – Brighton School of Lahore"
+            badge="Founder & Director"
+            name="Mr. Syed Mudasser Anayat"
+            subtitle="Brighton School of Lahore · Est. 2026"
+            quote="Our mission was always simple — give every child in Lahore access to world-class education in a caring, values-driven environment. We don't just build careers, we build character."
+            quoteLabel="Founder's Message"
+            accentColor="#F5A623"
+            delay="0s"
+            translateFrom="translateX(-36px)"
+            inView={leaderView.inView}
+          />
+
+          {/* Co-Founder */}
+          <LeaderCard
+            imageSrc="/co-founder.png"
+            imageAlt="Co-Founder – Brighton School of Lahore"
+            badge="Co-Founder & Principal"
+            name="Mrs. Mudasser"
+            subtitle="Brighton School of Lahore · Est. 2026"
+            quote="Education is not just about textbooks — it is about igniting curiosity, building resilience, and preparing young minds to face the world with confidence and integrity."
+            quoteLabel="Co-Founder's Message"
+            accentColor="#4A9EFF"
+            delay="0.15s"
+            translateFrom="translateX(36px)"
+            inView={leaderView.inView}
+          />
+
+        </div>
+      </div>
+
+      {/* Thin divider */}
+      <div
+        className="h-px mx-12 lg:mx-24"
+        style={{ background: 'linear-gradient(90deg, transparent, rgba(245,166,35,0.25), transparent)' }}
+      />
+
+      {/* ════════════════════
+          PART 4 — Timeline
+      ════════════════════ */}
       <div
         ref={timelineView.ref}
         className="relative z-10 max-w-6xl mx-auto px-6 lg:px-12 py-20"
@@ -322,7 +410,7 @@ export default function AboutSection() {
           }}
         >
           <p className="text-[#F5A623] text-xs font-bold uppercase tracking-[0.3em] mb-2">
-            30 Years of Growth
+            Where It All Began
           </p>
           <h3
             className="text-3xl font-black text-white"
@@ -332,7 +420,6 @@ export default function AboutSection() {
           </h3>
         </div>
 
-        {/* Timeline */}
         <div className="relative">
           {/* Centre vertical line */}
           <div
@@ -343,7 +430,7 @@ export default function AboutSection() {
           <div className="flex flex-col gap-8">
             {MILESTONES.map((m, i) => (
               <div
-                key={m.year}
+                key={i}
                 className={`flex flex-col lg:flex-row items-center gap-4 lg:gap-8 ${i % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'}`}
                 style={{
                   opacity: timelineView.inView ? 1 : 0,
@@ -351,9 +438,8 @@ export default function AboutSection() {
                   transition: `all 0.5s ease ${i * 0.1}s`,
                 }}
               >
-                {/* Card */}
                 <div
-                  className="flex-1 p-5 rounded-2xl max-w-xs lg:max-w-none"
+                  className="flex-1 p-5 rounded-2xl"
                   style={{
                     background: 'rgba(255,255,255,0.03)',
                     border: '1px solid rgba(255,255,255,0.08)',
@@ -368,7 +454,6 @@ export default function AboutSection() {
                   <p className="text-white/45 text-sm leading-relaxed">{m.desc}</p>
                 </div>
 
-                {/* Year bubble — centre */}
                 <div
                   className="flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center z-10"
                   style={{
@@ -384,7 +469,6 @@ export default function AboutSection() {
                   </span>
                 </div>
 
-                {/* Empty side spacer on desktop */}
                 <div className="flex-1 hidden lg:block" />
               </div>
             ))}
@@ -398,9 +482,9 @@ export default function AboutSection() {
         style={{ background: 'linear-gradient(90deg, transparent, rgba(245,166,35,0.25), transparent)' }}
       />
 
-      {/* ════════════════════════════
-          PART 3 — Core Values
-      ════════════════════════════ */}
+      {/* ════════════════════
+          PART 5 — Core Values
+      ════════════════════ */}
       <div
         ref={valuesView.ref}
         className="relative z-10 max-w-6xl mx-auto px-6 lg:px-12 py-20"
@@ -428,7 +512,7 @@ export default function AboutSection() {
           {VALUES.map((v, i) => (
             <div
               key={v.title}
-              className="p-6 rounded-2xl text-center group transition-all duration-300 hover:-translate-y-1"
+              className="p-6 rounded-2xl text-center transition-all duration-300 hover:-translate-y-1"
               style={{
                 background: 'rgba(255,255,255,0.03)',
                 border: '1px solid rgba(255,255,255,0.08)',
